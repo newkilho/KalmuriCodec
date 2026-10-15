@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds KalmuriCodec.dll: static LGPL FFmpeg + kff.c (run via build.bat)
+# Builds Kalmuri.dll: static LGPL FFmpeg + kff.c (run via build.bat)
 set -euo pipefail
 
 FFMPEG_VER=7.1.5
@@ -83,7 +83,35 @@ for t in $(PKG_CONFIG_PATH="$OUT/lib/pkgconfig:$PKG_CONFIG_PATH" pkg-config --st
 done
 cd "$CODEC"
 cl -nologo -O2 -MT -W3 -utf-8 -c "$(cygpath -m "$HERE/kff.c")" -I"$(cygpath -m "$OUT/include")" -Fokff.obj
-link -nologo -dll -out:KalmuriCodec.dll -implib:KalmuriCodec.lib kff.obj "${LINKLIBS[@]}" -opt:ref -opt:icf
+# File version = FFmpeg version + .0 (the DLL holds only FFmpeg for now)
+VER="${FFMPEG_VER//./,},0"
+cat > kalmuri.rc <<EOF
+1 VERSIONINFO
+FILEVERSION $VER
+PRODUCTVERSION $VER
+FILEOS 0x40004
+FILETYPE 0x2
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "Kilho.net"
+      VALUE "FileDescription", "Kalmuri codec (FFmpeg $FFMPEG_VER, LGPL-2.1-or-later)"
+      VALUE "FileVersion", "$FFMPEG_VER.0"
+      VALUE "OriginalFilename", "Kalmuri.dll"
+      VALUE "ProductName", "Kalmuri"
+      VALUE "ProductVersion", "$FFMPEG_VER.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END
+EOF
+rc -nologo -fokalmuri.res kalmuri.rc
+link -nologo -dll -out:Kalmuri.dll -implib:Kalmuri.lib kff.obj kalmuri.res "${LINKLIBS[@]}" -opt:ref -opt:icf
 echo "${CONFIG[*]}" > "$CODEC/CONFIGURE.txt"
-mv -f KalmuriCodec.dll "$DLL/"
-ls -la "$DLL/KalmuriCodec.dll" KalmuriCodec.lib
+mv -f Kalmuri.dll "$DLL/"
+ls -la "$DLL/Kalmuri.dll" Kalmuri.lib

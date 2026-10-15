@@ -1,4 +1,4 @@
-/* KalmuriCodec.dll: H.264/AAC MP4 encoder on top of static FFmpeg (LGPL-2.1-or-later) */
+/* Kalmuri.dll: H.264/AAC MP4 encoder on top of static FFmpeg (LGPL-2.1-or-later) */
 #include <stdio.h>
 #include <string.h>
 

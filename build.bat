@@ -1,4 +1,4 @@
-@rem Builds KalmuriCodec.dll: sets up MSVC x64, then runs build.sh in MSYS2
+@rem Builds Kalmuri.dll: sets up MSVC x64, then runs build.sh in MSYS2
 @echo off
 setlocal
 if "%VCVARS%"=="" set VCVARS=D:\BuildTools\VC\Auxiliary\Build\vcvars64.bat

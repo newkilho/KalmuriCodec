@@ -1,7 +1,8 @@
 # KalmuriCodec
 
-`KalmuriCodec.dll` is the video recording codec used by [Kalmuri](https://kalmuri.kilho.net), a screen capture tool for Windows.
+`Kalmuri.dll` is the video recording codec used by [Kalmuri](https://kalmuri.kilho.net), a screen capture tool for Windows.
 It bundles a minimal static build of [FFmpeg](https://ffmpeg.org) 7.1.5 with a thin C wrapper (`kff.c`) into a single DLL.
+The file version of the DLL is the FFmpeg version followed by `.0` (for example `7.1.5.0`).
 
 Kalmuri loads this DLL at run time and calls only the `kff_*` functions it exports.
 You can rebuild the DLL from this source and replace the copy next to `Kalmuri.exe`.
@@ -49,7 +50,7 @@ Run:
 build.bat
 ```
 
-The script downloads the sources listed above into `%FF_WORK%\src`, builds FFmpeg and libvpl as static libraries with the static CRT (`-MT`), and links them with `kff.c` into `KalmuriCodec.dll`.
+The script downloads the sources listed above into `%FF_WORK%\src`, builds FFmpeg and libvpl as static libraries with the static CRT (`-MT`), and links them with `kff.c` into `Kalmuri.dll`.
 
 You can change the paths with these environment variables:
 
@@ -58,9 +59,9 @@ You can change the paths with these environment variables:
 | `VCVARS` | `D:\BuildTools\VC\Auxiliary\Build\vcvars64.bat` | MSVC environment script |
 | `MSYS2` | `D:\Vendor\msys64` | MSYS2 install folder |
 | `FF_WORK` | `D:\Vendor\FFMpeg\build` | work folder for sources and build files |
-| `FF_DLL` | `D:\Vendor\Kalmuri` | output folder for `KalmuriCodec.dll` |
+| `FF_DLL` | `D:\Vendor\Kalmuri` | output folder for `Kalmuri.dll` |
 
-The import library `KalmuriCodec.lib` and the configure flags actually used (`CONFIGURE.txt`) are written to `%FF_WORK%\codec`.
+The import library `Kalmuri.lib` and the configure flags actually used (`CONFIGURE.txt`) are written to `%FF_WORK%\codec`.
 
 ### FFmpeg configure flags
 
@@ -79,9 +80,9 @@ The import library `KalmuriCodec.lib` and the configure flags actually used (`CO
 
 ## Replacing the DLL in Kalmuri
 
-1. Build `KalmuriCodec.dll` as described above.
+1. Build `Kalmuri.dll` as described above.
 2. Close Kalmuri.
-3. Copy the new DLL over `KalmuriCodec.dll` in the Kalmuri install folder.
+3. Copy the new DLL over `Kalmuri.dll` in the Kalmuri install folder.
 
 Keep the `kff_*` function names and signatures unchanged, because Kalmuri calls them directly.
 Kalmuri does not use the DLL if `kff_check` returns 0. `kff_check` returns 0 when the FFmpeg libraries linked into the DLL have different major versions from the headers `kff.c` was compiled with.
